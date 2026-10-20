@@ -33,7 +33,25 @@ label,.field-label{color:var(--xc-ink)}
 .badge,.status-chip{background:#f7e6ee;color:var(--xc-burgundy)}
 hr{border-color:var(--xc-silver)}
 </style>
-</head>
+<style id="record-collapse-theme">
+.record-collapse{border:1px solid #d8dbe0!important;border-radius:12px;background:#fff;margin:10px 0;overflow:hidden}
+.record-collapse>.record-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none;padding:13px 14px;cursor:pointer;color:#5b1535;font-weight:700}
+.record-collapse>.record-summary::-webkit-details-marker{display:none}
+.record-summary-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.record-summary-hint{font-size:.78rem;font-weight:600;color:#c2185b;white-space:nowrap}
+.record-expanded{padding:12px;border-top:1px solid #d8dbe0}
+.record-expanded .record-head{margin-bottom:10px}
+@media(max-width:520px){.record-collapse>.record-summary{padding:12px 10px}.record-summary-hint{font-size:.7rem}}
+</style>
+<style id="single-line-entry-style">
+.entry>summary.one-line-summary{display:flex;align-items:center;gap:12px;list-style:none;padding:14px 15px;color:#5b1535;cursor:pointer}
+.entry>summary.one-line-summary::-webkit-details-marker{display:none}
+.entry-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.entry-reference{flex:none;color:#777b82;font-size:.78rem;font-weight:500;white-space:nowrap}.expand-hint{flex:none;color:#c2185b;font-size:.8rem;font-weight:700}
+.entry[open]>summary.one-line-summary{border-bottom:1px solid #d8dbe0}
+.entry .body{padding:14px}
+@media(max-width:520px){.entry>summary.one-line-summary{padding:12px 10px;gap:6px}.entry-reference{font-size:.67rem}.expand-hint{font-size:.72rem}}
+</style></head>
 <body>
 <header><div class="inner"><div class="brand">CrossCountry · Staff tool</div><h1>Customer Issues / Shift Diary</h1><p>Keep a clear record of incidents and feedback for later reference.</p></div></header>
 <main>
@@ -53,7 +71,8 @@ hr{border-color:var(--xc-silver)}
 <div class="formgrid">
 <div><label>Date of incident</label><input type="date" value="2026-10-18"></div>
 <div><label>Headcode</label><input placeholder="e.g. 1E23"></div>
-<div class="field full"><label>Nature of complaint / incident</label><select><option>Select a category…</option><option>Customer complaint</option><option>Staff conduct / interaction</option><option>Safety concern</option><option>Operational issue</option><option>Communication / information</option><option>Other</option></select></div>
+<div class="field full"><label>Nature of complaint / incident</label><select><option>Select a category…</option><option>Abuse / assault</option><option>Customer issue</option>
+<option value="Complaint/pls explain from manager - for info">Complaint/pls explain from manager - for info</option><option>External incident</option><option>Incident on board</option><option>Late running</option><option>Other</option><option>Potential complaint</option><option>Safety incident</option></select></div>
 <div class="field full"><label>Short title (optional)</label><input placeholder="Date / headcode / nature used by default"></div>
 <div class="field full"><label>Context</label><textarea placeholder="Relevant background"></textarea></div>
 <div><label>When</label><input placeholder="Time / journey stage"></div><div><label>Who</label><input placeholder="People involved"></div>
@@ -66,13 +85,14 @@ hr{border-color:var(--xc-silver)}
 </main>
 <script>
 const data=[
-{id:1,date:"2026-10-18",headcode:"1E23",nature:"Customer complaint",place:"Newcastle – Birmingham New Street",when:"Approximately 14:20",who:"Customer and train crew",what:"A customer queried the information provided during a service disruption. The information given and subsequent interaction were recorded factually.",where:"On board service 1E23",why:"To retain an accurate record in case the interaction is raised as a complaint later.",summary:"Retain the details and add relevant correspondence if a complaint is received.",raised:"no",reply:"no",sent:false},
-{id:2,date:"2026-10-17",headcode:"1S45",nature:"Staff conduct / interaction",place:"On board train",when:"Approximately 18:05",who:"Customer and member of staff",what:"A customer expressed dissatisfaction with an interaction. Notes were made shortly afterwards to preserve the sequence of events.",where:"On board service 1S45",why:"Record the incident for reference if feedback is received.",summary:"Raised with line manager; awaiting a response.",raised:"yes",reply:"no",sent:true},
-{id:3,date:"2026-10-15",headcode:"1V50",nature:"Operational issue",place:"Platform / station",when:"Approximately 09:40",who:"Train crew and station staff",what:"An operational issue affected the information available to customers. The details and actions taken were noted.",where:"Station platform",why:"For a clear record of the event and any follow-up.",summary:"Reply received and follow-up recorded.",raised:"yes",reply:"yes",sent:true}
+{id:1,date:"2026-10-18",headcode:"1E23",nature:"Customer issue",place:"Newcastle – Birmingham New Street",when:"Approximately 14:20",who:"Customer and train crew",what:"A customer queried the information provided during a service disruption. The information given and subsequent interaction were recorded factually.",where:"On board service 1E23",why:"To retain an accurate record in case the interaction is raised as a complaint later.",summary:"Retain the details and add relevant correspondence if a complaint is received.",raised:"no",reply:"no",sent:false},
+{id:2,date:"2026-10-17",headcode:"1S45",nature:"Potential complaint",place:"On board train",when:"Approximately 18:05",who:"Customer and member of staff",what:"A customer expressed dissatisfaction with an interaction. Notes were made shortly afterwards to preserve the sequence of events.",where:"On board service 1S45",why:"Record the incident for reference if feedback is received.",summary:"Raised with line manager; awaiting a response.",raised:"yes",reply:"no",sent:true},
+{id:3,date:"2026-10-15",headcode:"1V50",nature:"Safety incident",place:"Platform / station",when:"Approximately 09:40",who:"Train crew and station staff",what:"An operational issue affected the information available to customers. The details and actions taken were noted.",where:"Station platform",why:"For a clear record of the event and any follow-up.",summary:"Reply received and follow-up recorded.",raised:"yes",reply:"yes",sent:true}
 ];
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const title=e=>`${e.date.split("-").reverse().join("/")} / ${e.headcode} / ${e.nature}`;
-function render(){let q=document.querySelector("#search").value.toLowerCase(),r=document.querySelector("#raised").value,p=document.querySelector("#reply").value,s=document.querySelector("#sort").value;let arr=data.filter(e=>(`${title(e)} ${e.place} ${e.what} ${e.summary}`.toLowerCase().includes(q))&&(r==="all"||e.raised===r)&&(p==="all"||e.reply===p));arr.sort((a,b)=>s==="old"?a.date.localeCompare(b.date):s==="title"?title(a).localeCompare(title(b)):b.date.localeCompare(a.date));document.querySelector("#count").textContent=`(${arr.length})`;document.querySelector("#entries").innerHTML=arr.length?arr.map(e=>`<details class="entry"><summary><div class="entry-title">${esc(title(e))}</div><div class="meta">${esc(e.place)}</div><div class="pills"><span class="pill ${e.raised==="yes"?"yes":"pending"}">Complaint received: ${e.raised==="yes"?"Yes":"No"}</span><span class="pill ${e.reply==="yes"?"yes":"pending"}">Response sent: ${e.reply==="yes"?"Yes":"No"}</span></div></summary><div class="body">${[["Context","Relevant circumstances recorded at the time."],["When",e.when],["Who",e.who],["What",e.what],["Where",e.where],["Why",e.why],["Summary / follow-up",e.summary]].map(([k,v])=>`<h3>${k}</h3><p>${esc(v)}</p>`).join("")}<div class="actions"><button class="secondary" onclick="exportDemoPdf(${e.id})">Export entry PDF</button><button class="secondary" onclick="emailDemoEntry(${e.id})">Email entry</button></div><div class="checkline"><input type="checkbox" id="sent${e.id}" ${e.sent?"checked":""} onchange="data.find(x=>x.id===${e.id}).sent=this.checked"><label for="sent${e.id}">Sent to line manager<small>Tick once the feedback / reply has been raised with and sent to your line manager.</small></label></div></div></details>`).join(""):'<div class="empty">No entries match these filters.</div>'}
+const formatDate=e=>{const [y,m,d]=e.date.split("-");return `${d} ${m} ${y}`};
+const title=e=>e.subject||e.nature;
+function render(){let q=document.querySelector("#search").value.toLowerCase(),r=document.querySelector("#raised").value,p=document.querySelector("#reply").value,s=document.querySelector("#sort").value;let arr=data.filter(e=>(`${title(e)} ${e.place} ${e.what} ${e.summary}`.toLowerCase().includes(q))&&(r==="all"||e.raised===r)&&(p==="all"||e.reply===p));arr.sort((a,b)=>s==="old"?a.date.localeCompare(b.date):s==="title"?title(a).localeCompare(title(b)):b.date.localeCompare(a.date));document.querySelector("#count").textContent=`(${arr.length})`;document.querySelector("#entries").innerHTML=arr.length?arr.map(e=>`<details class="entry"><summary class="one-line-summary"><span class="entry-title">${esc(e.headcode)} - ${esc(formatDate(e))} - ${esc(title(e))}</span><span class="entry-reference">[${esc(e.date.replaceAll("-","").slice(2)+ "-" + e.headcode + "-01")}]</span><span class="expand-hint">View</span></summary><div class="body"><div class="meta">Reference: ${esc(e.date.replaceAll("-","").slice(2)+ "-" + e.headcode + "-01")} · Nature: ${esc(e.nature)} · ${esc(e.place)}</div><div class="pills"><span class="pill ${e.raised==="yes"?"yes":"pending"}">Complaint / “please explain” received: ${e.raised==="yes"?"Yes":"No"}</span><span class="pill ${e.reply==="yes"?"yes":"pending"}">Account / response sent: ${e.reply==="yes"?"Yes":"No"}</span></div>${[["Context","Relevant circumstances recorded at the time."],["When",e.when],["Who",e.who],["What",e.what],["Where",e.where],["Why",e.why],["Summary / follow-up",e.summary]].map(([k,v])=>`<h3>${k}</h3><p>${esc(v)}</p>`).join("")}<div class="actions"><button class="secondary" onclick="exportDemoPdf(${e.id})">Export entry PDF</button><button class="secondary" onclick="emailDemoEntry(${e.id})">Email entry</button></div><div class="checkline"><input type="checkbox" id="sent${e.id}" ${e.sent?"checked":""} onchange="data.find(x=>x.id===${e.id}).sent=this.checked"></div></div></details>`).join(""):'<div class="empty">No entries match these filters.</div>'}
 ["search","raised","reply","sort"].forEach(id=>document.getElementById(id).addEventListener(id==="search"?"input":"change",render));
 document.getElementById("addBtn").onclick=()=>{document.getElementById("listView").style.display="none";document.getElementById("formView").style.display="block";window.scrollTo(0,0)};
 document.getElementById("backBtn").onclick=()=>{document.getElementById("formView").style.display="none";document.getElementById("listView").style.display="block";window.scrollTo(0,0)};
