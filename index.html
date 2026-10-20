@@ -226,7 +226,7 @@ input,select,textarea{width:100%}
     }
   });
 })();
-</script>
+<\/script>
 
 </body></html>`);w.document.close()}
 function emailEntry(id){const e=entries.find(x=>x.id===id);if(!e)return;const lines=[`Reference: ${reference(e)}`,title(e),`Date: ${formatDate(e.incidentDate)||'Not recorded'}`,`Headcode: ${e.headcode||'Not recorded'}`,`Nature: ${e.nature||'Not recorded'}`,`Complaint / “please explain” received: ${e.raised==='yes'?'Yes':'No'}${e.raisedDate?' (received '+formatDate(e.raisedDate)+')':''}`,`Account / response sent: ${e.replied==='yes'?'Yes':'No'}${e.replyDate?' (sent '+formatDate(e.replyDate)+')':''}`,'',... [['Context',e.context],['When',e.when],['Who',e.who],['What',e.what],['Where',e.where],['Why',e.why],['Summary',e.summary],['Follow-up / reply notes',e.followup]].filter(x=>x[1]).map(([k,v])=>`${k}:\n${v}`)];location.href='mailto:?subject='+encodeURIComponent(title(e))+'&body='+encodeURIComponent(lines.join('\n'))}
